@@ -15,9 +15,9 @@ their grammar exercises with teacher's corrections into their blog – hence the
 That being said, you can build a 'normal' multilingual, multi-authored responsive website with
 Errorist.
 
-Efficient multilingual content management is Errorist's top priority. Images, for instance are
+Efficient multilingual content management is Errorist's top priority. Images, for instance, are
 tightly coupled with their (multilingual) captions and authors using image bundles. Adding the main
-image to a page (all translations) is a matter of a single(!) edit.
+image to a page (that is, all translations) is a matter of a single(!) edit.
 
 Keeping code noise in Markdown to the minimum is another priority. This is achieved by using
 page bundles combined with certain file naming conventions.
@@ -37,17 +37,30 @@ The Errorist theme will be pulled as a git submodule. This way, you will only ne
 in configuration to get started. Forking is important, since this will become _your project_, and you 
 will likely want to keep it on GitHub as such.
 
+So, fork
+[https://github.com/tvendelin/errorist-bootstrap](https://github.com/tvendelin/errorist-bootstrap)
+first, and then
+
+```
+git clone --recurse-submodules <YOUR FORK OF tvendelin/errorist-bootstrap> 
+```
+
 The bootstrapping project comes pre-configured with two languages, English and Russian. Russian has
 been chosen for the sake of contrasting example for multilingual features. Adding and removing
 languages is trivial and is described in a section of its own further down in this document. 
 
 If you want to use Errorist for an existing project, you would need to merge the example
-configuration from `errorist/exampleSite` directory with yours. Your content structure might also
-require some adjustments (see the next section).
+configuration from `errorist/exampleSite` directory with yours. To clone just the Errorist theme,
+
+```
+git clone git@github.com:tvendelin/errorist.git themes/errorist
+```
+
+Your content structure might also require some adjustments (see the next section).
 
 ## Adding Text Content
 
-Errorist's key features rely on particular page bundle structure. Here's an example with some
+Errorist's key features rely on a particular page bundle structure. Here's an example with some
 bells and whistles:
 
 ```
@@ -69,28 +82,27 @@ The English  and Russian pages are in `index*` files – it's just a usual page 
 The sub-directory `homework` contains four text files. These text files hold content for a block of
 clickable tabs, identified by directory name (`homework`). Such tab can be included in a page using
 a shortcode `{{</*tabs_bq "homework"*/>}}`. Should files contain any Markdown, it will be rendered.
-For language-sensitive tabs, `*.md` files should be used instead. See the 'Shortcodes' section for
-details.
+For language-sensitive tabs, `*.md` files should be used instead. See the [Shortcodes]({{< ref
+"#shortcodes-for-clickable-tabs" >}}) section for details.
 
-The `summary.*.md` files, when present, override the built-in `.Summary` page variable. This gives
-you a freedom to write your summaries any way you want. Note that a good summary isn't necessarily a
+The `summary.*md` files, when present, override the built-in `.Summary` page variable. This gives
+you the freedom to write your summaries any way you want. Note that a good summary isn't necessarily a
 continuous fragment of a page.
 
-Multiple authorship is supported, as well as localized authors' names. Put their IDs in the front
-matter as a list, and the localized names will be looked up in `i18n/*.yaml` files. 
+Multiple authorship is supported, as well as localized authors' names. 
 
 The file `main-img` (the name is significant) contains a reference to a page bundle with the main
 image for the page with captions in all supported languages and the authors' IDs. Switching the main
-image for a multilingual page (all translations) is thus a matter of editing a single line in a
+image for a multilingual page is thus a matter of editing a single line in a
 single file.
 
 All of the above offloads quite a lot of noise from your Markup and makes your content better
 manageable. 
 
-Errorist will work with other content setups supported by Hugo as far as the basic functionality
+Errorist will work with other supported content setups as far as the basic functionality
 provided by Hugo is concerned.
 
-Notice, that the content directory is pre-configured as `kontent`  instead of the default `content`.
+Notice, that the content directory is pre-configured as `kontent` instead of the default `content`.
 This will save you quite a lot of keystrokes on command line with tab-completion (`k<TAB>` instead
 of `cont<TAB>`).
 
@@ -98,7 +110,7 @@ of `cont<TAB>`).
 
 An 'image bundle' (a term specific to Errorist) is, in effect, a page bundle, stored under a
 particular content section, `kontent/images` by default. It includes _a single_ image file and
-index.*.md files containing associated texts for each supported language:
+index.*md files containing associated texts for each supported language:
 
 ```
 kontent/images/myimage
@@ -113,7 +125,7 @@ file isn't significant as long as Hugo recognizes its type as 'image'. An image 
 by its directory name, `myimage` in our example.
 
 The only front matter parameter specific to image bundle is `alt` which holds the same-named
-attribute for the `<img>` HTML tag. The caption for the image is the `.Content` of an `index.*.md`
+attribute for the `<img>` HTML tag. The caption for the image is the `.Content` of an `index.*md`
 file for the current `.Language`. The `alt` value would also fall back to `.Content` if omitted:
 
 ```
@@ -126,24 +138,26 @@ Image caption goes here
 ```
 
 An archetype for creating an image bundle is provided. You should adjust it according to the
-languages used in your website (more on this in the following sections). To add an image bundle, run
+languages used in your website ([more on this in the following sections]({{< ref "#localization"
+>}})). To add an image bundle, run
 
 ```
 hugo new images/myimage -k img
 ```
 
-and copy an image that you have in mind into just created page bundle.
+and copy an image that you have in mind into just created image bundle directory
+(`kontent/images/myimage/`).
 
 From now on, the image can be included into one or more pages by reference to its image bundle. All
-the attributes will follow it like ducklings follow the mother-duck, guarding you against the
+the attributes will follow it like ducklings follow their mother-duck, guarding you against the
 embarrassments of mismatching image/caption/author.
 
 ### Image Bundle Directory
 
 The directory holding image bundles (`kontent/images` by default) is defined by `.Site.Params.image_bundle_dir`
-configuration parameter (see `config/_default/params.yaml`), must be relative to `kontent`, and its
+configuration parameter (see `config/_default/params.yaml`). It must be relative to `kontent`, and its
 name should not begin with underscore, if you host your site on GitHub. By default, it is neither
-rendered nor listed when the site is built, which is handled by `kontent/images/_index.*.md` files'
+rendered nor listed when the site is built, which is handled by `kontent/images/_index.*md` files'
 front matter:
 
 ```yaml
@@ -156,13 +170,13 @@ cascade:
 ---
 ```
 
-If this is the desired behavior, add a `_index.*.md` file like the one above for each language that
+If this is the desired behavior, add a `_index.*md` file like the one above for each language that
 you add.  If you want the captioned images to be displayed as content in their own right – for
 example, listing them on author's page – remove cascading build configuration and create a normal
 `_index.md` file instead.
 
-Nothing prevents you, of course, from copying loose images under `static` directory or the page
-bundle. The usual Markdown syntax will work.
+Nothing prevents you, of course, from copying loose images into `static` directory or a page
+bundle directory. The usual Markdown syntax will work.
 
 ## Including Images in Pages
 
@@ -184,13 +198,17 @@ image bundle would be looked up. Markdown texts override caption and `alt` from 
 - `![](myimage)` without 'extension', the image bundle will be looked up with its caption and `alt`
 text.
 
-- `![custom alt](myimage "caption")` same as above, but caption and `alt` text overridden by
+- `![custom alt](myimage "caption")` same as above, but with caption and `alt` text overridden by
   Markdown.
 
 - `![custom alt](/img/simple.jpg "caption")` with 'extension', the image will be looked up as
 `static/img/simple.jpg`
 
-- `![custom alt](simple.jpg "caption")` will be looked up relative to the page bundle.
+- `![custom alt](simple.jpg "caption")`  the image will be looked up relative to the page bundle.
+
+### The Default Site Image for Social Networks
+
+This is the first element in `images:` list in `config/_default/params.yaml`
 
 ## Shortcodes for Clickable Tabs
 
@@ -268,7 +286,7 @@ Lower weight = higher position. Use gapped numbering for easier inserts
 (i.e. 10, 20, 30, ... ) as opposed to (1, 2, 3, ...)
 
 - `locale:` a combination of ISO-639 language code and ISO-3166 country code
-separated with underscore. Currently used only in `og:locale` meta tag.
+joined with underscore. Currently used only in `og:locale` meta tag.
 
 ### Add or Remove the Localization (Translations)
 
@@ -295,15 +313,15 @@ cp themes/errorist/i18n/en.yaml i18n/ee.yaml
 If you are going to add localized strings in your project (author names, clickable tabs, etc.), you
 will need to create translation files even for the languages supported by the theme. The
 translations in the theme and in your project will be merged, and your translation will win, should
-there be a conflict.
+there be any conflict.
 
-You will also need to adjust your archetypes (see the next section)
+You will also need to adjust your archetypes (see the next section).
 
 ## Archetypes
 
 Errorist makes a good use of so-called page bundles. To make a good of use of Errorist, a few
-archetypes are provided. If your site runs in one single language only, you can safely skip the next
-section.
+archetypes are provided. If your site runs in one single language only, you can safely [skip the next
+section]({{< ref "#usage" >}}).
 
 ### Localization
 
@@ -389,8 +407,8 @@ kontent/learning-indonesian/pronouns
 
 This will additionally create a skeleton for clickable tabs representing various stages of solving a
 grammar exercise. If you manage your homework using Git/GitHub, you can pipe the different commits
-a particular exercise file, and a `wdiff` between your solution and the correct one. And tell the
-world about your accomplishment in three languages you already speak.
+a particular exercise file, and a `wdiff` between your solution and the correct one. And then tell the
+world about your accomplishment in three languages you already speak!
 
 
 ## Managing Author(s)
@@ -419,7 +437,7 @@ won't make your site look prettier.
 
 - `name:` key should contain a fall-back name which will be displayed
 should there be no author's page (`kontent/authors/<ID>/index.md`) for a particular `.Language`,
-or the `.Title` of such page be not defined. 
+or should the `.Title` of such page be not defined. 
 
 - `image:` can be either local (the path should be relative to `<PROJECT DIR>/static`)
 or an URL, as in example below
@@ -458,6 +476,23 @@ authors:
 hugo new -k page authors/<ID>
 ```
 
+### Why `authors` aren't Included in the Archetypes' Front Matter
+
+If some of your authors (or you) will write a multi-part article or a book that will occupy an
+entire (sub)section, it won't make a lot of sense specifying the same author(s) in each single
+chapter. Instead, you would put this in the front matter of the `_index.md` of the said opus:
+
+```
+cascade:
+    authors:
+    - mmustermann
+```
+
+### Content Listing in the Author's Page 
+
+The author's page display a link only to the top page in content sub-hierarchy. That is, if a
+page is written by the same author as the parent page, it will be skipped. 
+
 ## Overriding the Defaults
 
 Do not make changes to the Errorist theme directly, because these will likely mess up the upgrading
@@ -471,8 +506,8 @@ need to copy or create them yourself.
 
 - `disqus.html` if you plan to include Disqus comments. Just copy the code you've got from them, and
   the comments will be enabled on each page rendered with `single.html`.
-- `favicons.html` to include all _HTML_ related to your site's [favicon
-  images](https://en.wikipedia.org/wiki/Favicon). To get both images and the HTML to
+- `favicons.html` to include all HTML related to your site's [favicon
+  images](https://en.wikipedia.org/wiki/Favicon). To get both the images, and the HTML to
   include them you may choose to use a free online service, like
   [https://realfavicongenerator.net](https://realfavicongenerator.net).
 - `gdpr.html` for the user consent widget which lets the user to accept cookies, agree to being
@@ -485,16 +520,30 @@ need to copy or create them yourself.
 
 Copy `themes/errorist/static/css/customized.css` to `static/css/customized.css` in your project and
 edit it. This will allow you to change the color of the stripe in the top of the page, the color of
-your site name, and whether you'd like to display it in uppercase.
+your site name, and whether you'd like to display it in uppercase. 
+
+You can also change how images in articles behave on mouse-over, hinting the user they can be
+expanded.
 
 ### Choosing the Layout
 
 You can change the layout of the pages rendered with `list.html` template by assigning a custom type
 in `_index.*md` file in the section root. The types supported are:
 
-- `list-compact` a more compact list as the name suggests still including `.Description` for the
+- `list-compact` a more compact list, as the name suggests, still including `.Description` for the
   pages listed.
 - `list-titles-only` same as above, but only titles are shown. This is the default for tags.
 
 The plan is to include alternative layouts for the site `index.html` pages.
 
+## Microdata Support
+
+Currently, only `BreadCrumbs` and `Article` with its derivatives (`BlogPosting`, `NewsArticle`, etc.)
+are supported. The type of the main content can be set in front matter with `schema:` parameter, the
+default being `Article`.
+
+## Reporting Bugs, Requesting Features, Pull Requests and Other Communication
+
+Please use GitHub repository issues for that. I might occasionally respond to posts at Hugo support
+forum, but I can easily overlook your posts as well. Please keep in mind that I'm running this
+project in my free time.

@@ -8,6 +8,11 @@ toc: true
 
 This page will walk you through the steps necessary to add content to your website.
 
+Though not a requirement, using `tree` command-line utility would be handy, if you get lost in
+directory structure. To install it, use the default package manager on Linux or MacPorts on Mac.
+`tree` lists entire file hierarchy under specified directory – see the examples throughout this
+tutorial.
+
 ## Create a Section and Your First Page
 
 From command line, run
@@ -46,6 +51,16 @@ Once I save this file, my first page is created!
 If you now click the 'Blogs' link (perhaps opening it in a new browser tab), you will get to the 'Blogs' section
 front page, where your test page is listed with its `title` and `description` (you've set these in
 the front matter). One more click, and you will see your page.
+
+### Markdown and YAML
+
+You probably know it already, but in case you don't: the content files, like `index.md` we've just
+created, combine two formats. The front matter is written in [YAML](https://yaml.org/spec/1.2/spec.html). 
+If you've got no stomach for the [official docs](https://yaml.org/spec/1.2/spec.html), google for a YAML tutorial.
+
+The rest of a content file is written in Markdown format. It is intended to be simple, and it is,
+too. [GitHub Markdown Guide](https://guides.github.com/features/mastering-markdown/) is a
+three-minute read.
 
 ### Set the Section Name and Description
 
@@ -136,7 +151,7 @@ toc: true
 Прижил сорок дочерей ...  
 ```
 
-Now your test page has got a "Languages" navigation section and a link pointing to the Russian
+Now your test page has got a 'Languages' navigation section and a link pointing to the Russian
 version of your page. Not surprisingly, once you click it, you will see the Russian page you've just
 created. The main image is already there, and notice – it has a Russian caption, too.
 
@@ -151,11 +166,34 @@ Choose an image and some descriptive name for it. I shall use `myimage` in this 
 hugo new -k img images/myimage
 ```
 
-Now copy the image file under `kontent/images/myimage/` (the name of the file doesn't matter).  Edit
-`kontent/images/myimage/index.md` file. Then, in `kontent/blog/test-page/main-img` file, change
-`plain-blue` to `myimage`, and check the page again:
-[http://localhost:1313/blog/test-page](http://localhost:1313/blog/test-page/). The image supplied
-with the theme should now change to yours.
+This creates another directory under `kontent/images` which now looks like this:
+
+```
+kontent/images/
+├── _index.md
+├── myimage
+│   ├── index.md
+│   └── index.ru.md
+└── plain-blue
+    ├── example.png
+    ├── index.md
+    └── index.ru.md
+```
+
+Copy an image file into `kontent/images/myimage/` (the name of the file doesn't matter). Assuming
+your image is `~/MyImages/random.jpg`,
+
+```
+cp ~/MyImages/random.jpg kontent/images/myimage/
+```
+
+Edit
+`kontent/images/myimage/index.md` file. We've got our image bundle ready. Let's link it to our test
+page now.
+
+In the `kontent/blog/test-page/main-img` file, change `plain-blue` to `myimage`, and check the page
+again: [http://localhost:1313/blog/test-page](http://localhost:1313/blog/test-page/). The image
+supplied with the theme should now change to yours.
 
 ## Including Images in the Content of a Page
 
@@ -166,7 +204,7 @@ The general Markdown syntax is
 ```
 
 where `src` is the URL of the image, relative or absolute. With Errorist, if `src` does not contain
-a dot (has no 'extention'), the image bundle under `kontent/images` directory will be looked up
+a dot (has no 'extension'), the image bundle under `kontent/images` directory will be looked up
 instead. The `"title text"` will override the one in the image bundle, and `alt text` will override
 the `alt` value. While this might be occasionally useful, most of the time you'd use the texts from
 the image bundle, and so reduce it to just
@@ -175,7 +213,7 @@ the image bundle, and so reduce it to just
 ![](src)
 ```
 
-Create a couple of image bundles and try to expariment with them. What happens if you
+Create a couple of image bundles and try to experiment with them. What happens if you
 refer to nonexistent image bundle? What if image bundle exists, but hasn't got any image?
 
 If you still prefer to use 'loose' images, an absolute path like `/file.jpg` as `src` value would
@@ -200,7 +238,7 @@ mkdir kontent/blog/test-page/homework
 ```
 
 In this directory create four files as shown in the following code snippets. Here, the names
-_are_ important. If you are experiencing the 'writes's block', here's example contents for the said
+_are_ important. If you are experiencing the 'writer's block', here's example contents for the said
 files:
 
 `kontent/blog/test-page/homework/10_task.txt`:
@@ -273,7 +311,7 @@ of this particular kind like this:
 hugo new -k langblog blog/señores-vivos-y-muertos
 ```
 
-If editing tab files feels a gruelling task, you are not alone. Consider managing your homework
+If editing tab files feels a grueling task, you are not alone. Consider managing your homework
 using Git and GitHub, and then you can just pipe different commits and `wdiffs` of your exercises
 into tabs files.
 
@@ -323,7 +361,7 @@ To refer to the page of your website, you should use a _shortcode_ in place of U
 
 The path is relative to the domain, so if your site is `http://example.com`, the above code will
 be rendered as `http://example.com//manual/readme#configure-languages-that-your-site-supports`. The
-benefit of usng this shortcode is that Hugo will throw exeption, if this page doesn't exist – so you
+benefit of using this shortcode is that Hugo will throw exception, if this page doesn't exist – so you
 are guaranteed against dead links at your own site at least.
 
 Do not use trailing `/` when using the shortcode – it will result in an error.
@@ -339,6 +377,36 @@ Specifically, you will need to:
 
 All of the links above point to sections in [README]({{< ref "/manual/readme" >}}) file. Once done,
 you should clean up the project, add some real content, build your site locally, and then publish it.
+Here is the short version.
+
+### Languages
+
+Open the `config/_default/languages.yaml` file. It already contains an example configuration for
+English and Russian. Read the comments, and add or remove languages as you need. If you are adding
+languages, copy `i18n` directory from the theme root to your project
+
+```
+cp -R themes/errorist/i18n ./
+```
+
+and add translation files for the added languages, probably using `i18n/en.yaml` as an example.
+
+### Configure Authors
+
+Open `data/authors.yaml` file, read the comments and follow the example.
+
+### Adjust Archetypes
+
+If there were changes in supported languages, you will need to add/remove `index*.md` files
+accordingly. That is, for each `index.md` file under `archetypes` directory in your project, you
+will need an `index.<LANG>.md` file for each language you support. To remove these files for Russian
+(if you are not going to use Russian), run
+
+```
+find archetypes -name 'index.ru.md' -exec rm '{}' \;
+```
+
+For details, refer to [README]({{< ref "/manual/readme" >}}).
 
 ## Clean Up
 
@@ -365,3 +433,51 @@ To remove the manuals as well, run
 # Remove (optionally) the manual
 rm -r kontent/manual
 ```
+
+## Build Your Site
+
+Once you are done creating the initial content you want to publish, you should change the front
+matter parameter `draft` to `false` on everything that you are going to publish, including the image
+bundles. To double check, run
+
+```
+grep -rl 'draft: false' kontent/*
+```
+
+If you now run 
+```
+hugo
+```
+
+your site will be built in the `public` directory under your project root. This
+can be changed by setting the `publishDir:` in `config/_default/config.yaml` to something else.
+Personally, I prefer to have it _outside_ the project directory, because it's generated content and
+shouldn't be included in a source repository.
+
+## Set up a Repository on GitHub and Publish Your Site
+
+Create an [account on GitHub](https://github.com), if you haven't done so yet.
+
+Create a repository named `<YOUR GITHUB USERNAME>.github.io`. 
+
+Build your site locally, and change into whatever you have configured for your `publishDir`.
+
+Initialize a git repository there, add the files, and commit:
+
+```
+git init
+git add .
+git commit -m 'initial commit'
+```
+
+Add your GitHub repository as a remote, and push to GitHub:
+
+```
+git remote add origin <YOUR GITHUB REPOSITORY URL>
+git push -u origin master
+```
+
+Your website will shortly be accessible at `http://<YOUR GITHUB USERNAME>.github.io`.
+
+If you ego demands a domain of your own, register one and [follow the GitHub
+manual](https://docs.github.com/en/github/working-with-github-pages/managing-a-custom-domain-for-your-github-pages-site).
